@@ -7,8 +7,8 @@ function getSolutions(a, b, c) {
         let x1 = -b / 2 / a;
         return {D: D, roots: [x1]}
     } else {
-        let x1 = (-b + Math.sqrt(D) ) / 2 / a;
-        let x2 = (-b - Math.sqrt(D) ) / 2 / a;
+        let x1 = (-b + Math.sqrt(D)) / 2 / a;
+        let x2 = (-b - Math.sqrt(D)) / 2 / a;
         return {D: D, roots: [x1, x2]}
     }
 }
@@ -48,12 +48,12 @@ function getAverageScore(data) {
 }
 
 function getAverageMark(marks) {
-    return marks.length === 0 ? 0 : ( marks.reduce((a,b) => a + b, 0) ) / marks.length;
+    return marks.length === 0 ? 0 : (marks.reduce((a, b) => a + b, 0)) / marks.length;
 }
 
 
 function getPersonData(secretData) {
-    return { firstName: getDecodedValue(secretData.aaa), lastName: getDecodedValue(secretData.bbb) };
+    return {firstName: getDecodedValue(secretData.aaa), lastName: getDecodedValue(secretData.bbb)};
 }
 
 function getDecodedValue(secret) {
