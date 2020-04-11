@@ -3,7 +3,7 @@ function getAnimalSound(animal) {
 }
 
 function getAverageMark(marks) {
-    let averageMark = marks.length === 0 ? 0 : marks.reduce((a,b) => a + b) / marks.length;
+    let averageMark = marks.length === 0 ? 0 : marks.reduce((a, b) => a + b) / marks.length;
     averageMark = Math.round(averageMark);
 
     return averageMark;
