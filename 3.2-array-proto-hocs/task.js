@@ -13,10 +13,7 @@ function sum(...args) {
 }
 
 function compareArrays(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-    return arr1.every((item, index) => arr2[index] === item);
+    return arr1.length === arr2.length && arr1.every((item, index) => arr2[index] === item);
 }
 
 console.log(compareArrays([8, 9], [6])); // false, разные значения
@@ -29,28 +26,53 @@ function memorize(fn, limit) {
     let memory = [];
 
     return (...args) => {
-        //console.log(memory);
+       //console.log(memory);
         const arr = Array.from(args);
-        const index = memory.findIndex((item) => compareArrays(item.args, arr));
-        if (index !== -1) {
+        const item = memory.find((item) => compareArrays(item.args, arr));
+        if (item !== undefined) {
             //console.log('Return from memory');
-            return memory[index].result;
+            return item.result;
         } else {
             //console.log('Count!');
             if (memory.length >= limit) {
                 memory.shift();
             }
+            const result = fn(...args);
             memory.push({
                 args: arr,
-                result: fn(...args)
+                result: result
             });
-            return fn(...args);
+            return result;
         }
 
     }
 }
 
+function memorizeByMap(fn, limit) {
+    let memory = new Map();
+
+    return (...args) => {
+        //console.log(memory);
+        const key = JSON.stringify(args);
+        if (memory.has(key)) {
+            //console.log('Return from memory');
+            return memory.get(key);
+        } else {
+            //console.log('Count!');
+            const mapKeys = Array.from(memory.keys());
+            if (mapKeys.length >= limit) {
+                memory.delete(mapKeys[0]);
+            }
+            const result = fn(...args);
+            memory.set(key, result);
+            return result;
+        }
+    }
+}
+
 const mSum = memorize(sum, 5); // 5 результатов может хранится в памяти
+
+const mSumByMap = memorizeByMap(sum, 5);
 
 // Вызов этих функций даёт один и тот же результат
 console.log(sum(3, 4)); // 7
@@ -67,7 +89,11 @@ console.log(mSum(3)); // 3
 console.log(mSum(3)); // 5
 console.log(mSum(5)); // 5
 
-const testArr = [ [1,2,3], [1,2], [1,2,3], [1,2], [9,5,2,4] ];
+console.log(mSumByMap(3, 4)); // 7
+console.log(mSumByMap(3, 4)); // 7
+console.log(mSumByMap(8, 9, 5, 4)); // 26
+
+const testArr = [ [1,2,3,1,2,3,1,2,3,1,2,3], [1,2], [1,2,3], [1,2], [9,5,2,4,9,5,2,4,9,5,2,4,9,5,2,4,9,5,2,4], [1,2,3,1,2,3,1,2,3], [1,2], ];
 
 function testCase(testFunction, timerName) {
     console.time(timerName);
@@ -81,8 +107,10 @@ function testCase(testFunction, timerName) {
 
 testCase(sum,'normal sum');
 testCase(mSum,'memorized sum');
+testCase(mSumByMap,'memorizedByMap sum');
 
 //Оптимизации не получилось
-//normal sum: 193.90625ms
-//memorized sum: 700.2841796875ms
+//normal sum: 353.73779296875ms
+//memorized sum: 1272.026123046875ms
+//memorizedByMap sum: 5886.9658203125ms
 //видимо сравнение массивов работает медленнее чем посчитать их сумму сразу
