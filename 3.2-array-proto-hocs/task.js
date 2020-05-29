@@ -29,7 +29,7 @@ function memorize(fn, limit) {
        //console.log(memory);
         const arr = Array.from(args);
         const item = memory.find((item) => compareArrays(item.args, arr));
-        if (item !== undefined) {
+        if (item) {
             //console.log('Return from memory');
             return item.result;
         } else {
